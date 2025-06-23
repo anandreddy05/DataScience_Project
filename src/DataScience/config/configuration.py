@@ -1,10 +1,16 @@
 from src.DataScience.constants import CONFIG_FILE_PATH,PARAMS_FILE_PATH,SCHEMA_FILE_PATH
 from src.DataScience.utils.common import read_yaml,create_directories
-
+from dotenv import load_dotenv
 from src.DataScience.entity.config_entity import (DataIngestionconfig,
                                                   DataValidationConfig,
                                                   DataTransformationConfig,
-                                                  ModelTrainingConfig)
+                                                  ModelTrainingConfig,
+                                                  ModelEvaluationConfig)
+import os
+load_dotenv()
+os.environ['MLFLOW_TRACKING_URI']="https://dagshub.com/anandreddy.s3215/DataScience_Project.mlflow"
+os.environ['MLFLOW_TRACKING_USERNAME']="anandreddy.s3215"
+os.environ['MLFLOW_TRACKING_PASSWORD']=os.getenv("MLFLOW_TRACKING_PASSWORD")
 
 class ConfigurationManager:
     def __init__(self,
@@ -68,3 +74,20 @@ class ConfigurationManager:
             target_column=schema.name
         )
         return model_trainer_config
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        config = self.config.model_evaluation
+        params = self.params.ElasticNet
+        schema = self.schema.TARGET_COLUMN
+        
+        create_directories([config.root_dir])
+        
+        model_evaluation_config = ModelEvaluationConfig(
+            root_dir=config.root_dir,
+            test_data_path= config.test_data_path,
+            model_path= config.model_path,
+            all_params= params,
+            metric_file_name= config.metric_file_name,
+            target_column= schema.name,
+            mlflow_uri=os.environ['MLFLOW_TRACKING_URI']
+        )
+        return model_evaluation_config
