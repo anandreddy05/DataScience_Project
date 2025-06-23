@@ -10,7 +10,7 @@ import os
 load_dotenv()
 os.environ['MLFLOW_TRACKING_URI']="https://dagshub.com/anandreddy.s3215/DataScience_Project.mlflow"
 os.environ['MLFLOW_TRACKING_USERNAME']="anandreddy.s3215"
-os.environ['MLFLOW_TRACKING_PASSWORD']="5c03a5fac437bd384c9bfe2a086d6ab208e0e746"
+os.environ['MLFLOW_TRACKING_PASSWORD']=os.getenv("MLFLOW_TRACKING_PASSWORD") # add password
 
 class ConfigurationManager:
     def __init__(self,
